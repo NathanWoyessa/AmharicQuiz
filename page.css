@@ -1,0 +1,39 @@
+h1 {
+    text-align: center;
+}
+
+.container {
+  height: 100px;
+  position: relative;
+  border: 2px solid rgb(11, 98, 100);
+  
+  /* 1. Turn on Flexbox */
+  display: flex; 
+  
+  /* 2. Center items horizontally (X-axis) */
+  justify-content: center; 
+  
+  /* 3. Center items vertically (Y-axis) */
+  align-items: center; 
+  
+  /* 4. Optional: Adds clean spacing between your buttons */
+  gap: 50px; 
+}
+
+/* You don't need any positioning layout on the buttons themselves! */
+.answers {
+  padding: 10px 50px;
+}
+
+#questionNum {
+    text-align: center;
+}
+
+#question {
+    text-align: center;
+}
+
+#btn {
+    display: flex;
+    justify-content: center;
+}
