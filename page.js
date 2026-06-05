@@ -16,8 +16,17 @@ function getIntRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+class scoring {
+    streak = 0;
+    questionsCorrect = 0;
+
+    getAmountOfIncorrectQuestions(totalQuestions) {
+        return totalQuestions - this.questionsCorrect;
+    }
+}
+
 class levelData {
-    levelNumber = 0;
+    levelNumber = 1;
 
     questionNumber = 0;
     questiontype = questionTypeEnum.FIND_THE_SOUND;
@@ -28,6 +37,8 @@ class levelData {
     correctButton = 0;
     maxQuestions = 20;
 
+    scoreData = new scoring();
+
     buttonsData = []; // The array storing the data in each button
 
     resetButtonText(button, buttonNumber) {
@@ -37,7 +48,7 @@ class levelData {
     // Gets the randomized question letter via index with randomized vowel depending on the level
     getQuestionLetter(randomIndex) {
         let randVowel = 0;
-        if (this.levelNumber > 0) {
+        if (this.levelNumber > 1) {
             randVowel = getIntRange(0, 6);
         }
         return this.amharicRandomizedAlphabet[randomIndex][randVowel];
@@ -138,7 +149,8 @@ class levelData {
         this.question = this.getQuestion();
         console.log(this);
 
-        document.getElementById("questionNum").textContent = "Question " + this.questionNumber; // Set question Number
+        // Set question and level number
+        document.getElementById("questionNum").textContent = "Question " + this.questionNumber + ", level " + this.levelNumber;
 
         this.setButtons();
     }
