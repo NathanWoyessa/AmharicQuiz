@@ -254,6 +254,18 @@ class levelData {
         return question;
     }
 
+    getTimeToPassLevel() {
+        if (this.levelNumber === 1) {
+            return this.amharicRandomizedAlphabet.length * 2.5; // Multipled by 3 for seconds per question
+        } else if (this.levelNumber === 2) {
+            return this.amharicRandomizedAlphabet.length * 1.5;
+        } else if (this.levelNumber === 3) {
+            return this.amharicRandomizedAlphabet.length * 1;
+        } else {
+            return this.amharicRandomizedAlphabet.length * (5 / this.levelNumber);
+        }
+    }
+
     finishLevel() {
         const percentage = document.createElement("p");
         const secondsPassed = document.createElement("p");
@@ -267,7 +279,7 @@ class levelData {
         div.appendChild(secondsPassed);
 
 
-        if (this.secondsPassed <= 350) {
+        if (this.secondsPassed <= this.getTimeToPassLevel()) {
             const finishMsg = document.createElement("p");
             finishMsg.textContent += "You have completed this test in the sufficient amount of time!";
 
