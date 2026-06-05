@@ -16,6 +16,20 @@ function getIntRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function buttonEventClick(levelData, event) {
+    const button = event.target;
+    if (button.textContent.includes(levelData.correctAnswer)) {
+        console.log("correct answer!");
+        levelData.scoreData.addAnsweredQuestion(true);
+    }
+    else {
+        console.log("incorrect answer");
+        levelData.scoreData.addAnsweredQuestion(false);
+    }
+
+    levelData.nextQuestion(); // Make sure this is called after
+}
+
 class scoring {
     highestStreak = 0;
     currentStreak = 0;
@@ -65,6 +79,8 @@ class levelData {
     scoreData = new scoring();
 
     buttonsData = []; // The array storing the data in each button
+
+    handler = (event) => { buttonEventClick(this, event); };
 
     resetButtonText(button, buttonNumber) {
         button.textContent = buttonNumber + ". ";;
@@ -164,7 +180,12 @@ class levelData {
         if (this.questionNumber < this.maxQuestions) {
             this.setQuestion();
         } else {
-            
+            // Finish level
+            console.log("final score is " + this.scoreData.calculateFinalScore());
+
+            for (let button of document.getElementsByClassName("answers")) {
+                button.removeEventListener("click", this.handler);
+            }
         }
     }
 
@@ -192,19 +213,7 @@ class levelData {
             i++;
             this.resetButtonText(button, i + 1);
 
-            button.addEventListener("click", () => {
-
-                if (button.textContent.includes(this.correctAnswer)) {
-                    console.log("correct answer!");
-                    this.scoreData.addAnsweredQuestion(true);
-                }
-                else {
-                    console.log("incorrect answer");
-                    this.scoreData.addAnsweredQuestion(false);
-                }
-
-                this.nextQuestion(); // Make sure this is called after
-            });
+            button.addEventListener("click", this.handler);
         }
 
         this.nextQuestion();
