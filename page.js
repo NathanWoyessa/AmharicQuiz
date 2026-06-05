@@ -16,6 +16,7 @@ class levelData {
     questiontype = questionTypeEnum.FIND_THE_SOUND;
     amharicRandomizedAlphabet = [];
     correctAnswer = "";
+    maxQuestions = 10;
 
     getRandLetter() {
         let randVowel = 0;
@@ -55,7 +56,11 @@ class levelData {
     nextQuestion() {
         this.questionNumber++;
 
-        this.setQuestion();
+        if (this.questionNumber < this.maxQuestions) {
+            this.setQuestion();
+        } else {
+            
+        }
     }
 
     getRandQuestion() {
@@ -71,10 +76,11 @@ class levelData {
 
     }
 
-    setLevel(levelNumber = 0) {
+    setLevel(levelNumber = 0, maxLevels = 10) {
         this.levelNumber = levelNumber;
         this.questionNumber = 0;
         this.amharicRandomizedAlphabet = shuffleToCopy(amharicAlphabetList);
+        this.maxQuestions = maxLevels;
 
         let buttons = document.getElementsByClassName("answers");
 
