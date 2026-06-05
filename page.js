@@ -148,9 +148,9 @@ class levelData {
     #setButtonEventHandlers() {
         let buttons = document.getElementsByClassName("answers");
 
-        let i = 0;
-        for (let button of buttons) {
-            i++;
+        for (let i = 0; i < buttons.length; i++) {
+            let button = this.getButton(i);
+
             button.dataset.buttonId = i;
 
             this.resetButtonText(button, i + 1);
@@ -197,10 +197,11 @@ class levelData {
 
         this.correctButton = getIntRange(0, 3);
 
+        this.buttonsData.length = 4;
+
         for (let i = 0; i < 4; i++) {
             let button = this.getButton(i);
             this.resetButtonText(button, i + 1); // Always reset button text before setting question to not accumulate text
-            this.buttonsData.length = 4;
 
             if (i === this.correctButton) {
                 button.textContent += this.correctAnswer;
