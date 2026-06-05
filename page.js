@@ -49,7 +49,7 @@ class scoring {
     }
 
     getCorrectAccuacy() {
-        return (this.questionsCorrect / this.totalQuestionsCount) * 100;
+        return Math.round((this.questionsCorrect / this.totalQuestionsCount) * 100);
     }
 
     calculateFinalScore() {
