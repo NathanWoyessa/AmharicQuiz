@@ -17,11 +17,36 @@ function getIntRange(min, max) {
 }
 
 class scoring {
-    streak = 0;
+    highestStreak = 0;
+    currentStreak = 0;
+    totalQuestionsCount = 0;
     questionsCorrect = 0;
 
-    getAmountOfIncorrectQuestions(totalQuestions) {
-        return totalQuestions - this.questionsCorrect;
+
+    getAmountOfIncorrectQuestions() {
+        return this.totalQuestionsCount - this.questionsCorrect;
+    }
+
+    getCorrectAccuacy() {
+        return (this.totalQuestionsCount / this.questionsCorrect) * 100;
+    }
+
+    calculateFinalScore() {
+        return this.getCorrectAccuacy() * this.highestStreak;
+    }
+
+    addAnsweredQuestion(answerStatusBool) {
+        this.totalQuestionsCount++;
+        if (answerStatusBool === true) {
+            this.questionsCorrect++;
+            this.currentStreak++;
+
+            if (this.currentStreak > this.highestStreak) {
+                this.highestStreak = this.currentStreak; // Set new highest streak
+            }
+        } else {
+            this.currentStreak = 0;
+        }
     }
 }
 
@@ -155,11 +180,10 @@ class levelData {
         this.setButtons();
     }
 
-    setLevel(levelNumber = 0, maxLevels = 10) {
+    setLevel(levelNumber = 0) {
         this.levelNumber = levelNumber;
         this.questionNumber = 0;
         this.amharicRandomizedAlphabet = shuffleToCopy(amharicAlphabetList);
-        this.maxQuestions = maxLevels;
 
         let buttons = document.getElementsByClassName("answers");
 
@@ -172,9 +196,11 @@ class levelData {
 
                 if (button.textContent.includes(this.correctAnswer)) {
                     console.log("correct answer!");
+                    this.scoreData.addAnsweredQuestion(true);
                 }
                 else {
                     console.log("incorrect answer");
+                    this.scoreData.addAnsweredQuestion(false);
                 }
 
                 this.nextQuestion(); // Make sure this is called after
@@ -188,4 +214,4 @@ class levelData {
 
 const level = new levelData();
 
-level.setLevel(0);
+level.setLevel(1);
