@@ -25,9 +25,16 @@ function buttonEventClick(levelData, event) {
     else {
         console.log("incorrect answer");
         levelData.scoreData.addAnsweredQuestion(false);
+        button.style.backgroundColor = "red";
     }
 
-    levelData.nextQuestion(); // Make sure this is called after
+    levelData.showCorrectButton();
+
+    document.getElementById("continue").disabled = false;
+
+    levelData.setAnswerButtonsDisabledStatus(true);
+
+    //levelData.nextQuestion(); // Make sure this is called after
 }
 
 class scoring {
@@ -82,8 +89,18 @@ class levelData {
 
     handler = (event) => { buttonEventClick(this, event); };
 
+    showCorrectButton() {
+        for (let i = 0; i < this.buttonsData.length; i++) {
+            let button = this.getButton(i);
+
+            if (this.buttonsData[i] === this.correctAnswer) {
+                button.style.backgroundColor = "green";
+            }
+        }
+    }
+
     resetButtonText(button, buttonNumber) {
-        button.textContent = buttonNumber + ". ";;
+        button.textContent = buttonNumber + ". ";
     }
 
     // Gets the randomized question letter via index with randomized vowel depending on the level
@@ -127,7 +144,7 @@ class levelData {
     #setButtonEventHandlers() {
         let buttons = document.getElementsByClassName("answers");
 
-        let i = 0; // Start at 1 to have 1 based numbering for questions
+        let i = 0;
         for (let button of buttons) {
             i++;
             this.resetButtonText(button, i + 1);
@@ -136,10 +153,41 @@ class levelData {
         }
     }
 
+    setAnswerButtonsDisabledStatus(staus) {
+        let buttons = document.getElementsByClassName("answers");
+
+        for (let button of buttons) {
+            button.disabled = staus;
+        }
+    }
+
+    #setUpContinueButton() {
+        let button = document.getElementById("continue");
+        button.disabled = true;
+
+        button.addEventListener("click", () => {
+            button.disabled = true; // Disable after clicking
+            this.setAnswerButtonsDisabledStatus(false);
+            this.nextQuestion();
+            console.log("continue button pressed");
+        });
+
+
+    }
+
+    #setUpButtonColors() {
+        let buttons = document.getElementsByClassName("answers");
+
+        for (let button of buttons) {
+            button.style.backgroundColor = ""; // Reset to default color
+        }   
+    }
+
+    // Happens every new question, callbacks should be done once before level starts
     setButtons() {
         let randomLetterIndex = 0;
 
-        this.#setButtonEventHandlers();
+        this.#setUpButtonColors();
 
         this.correctButton = getIntRange(0, 3);
 
@@ -191,6 +239,7 @@ class levelData {
     nextQuestion() {
         this.questionNumber++;
 
+        console.log(this.questionNumber);
         if (this.questionNumber <= this.maxQuestions) {
             this.setQuestion();
         } else {
@@ -238,6 +287,9 @@ class levelData {
             console.error("Invalid levelNumber: " + this.levelNumber);
         }
 
+        this.#setButtonEventHandlers();
+        this.#setUpContinueButton();
+
 
         this.nextQuestion();
     }
@@ -246,4 +298,4 @@ class levelData {
 
 const level = new levelData();
 
-level.setLevel(2);
+level.setLevel(1);
