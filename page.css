@@ -2,7 +2,7 @@ h1 {
     text-align: center;
 }
 
-.container {
+#container {
   height: 100px;
   position: relative;
   border: 2px solid rgb(11, 98, 100);

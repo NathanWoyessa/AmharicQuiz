@@ -49,7 +49,7 @@ class scoring {
     }
 
     getCorrectAccuacy() {
-        return (this.totalQuestionsCount / this.questionsCorrect) * 100;
+        return (this.questionsCorrect / this.totalQuestionsCount) * 100;
     }
 
     calculateFinalScore() {
@@ -243,6 +243,23 @@ class levelData {
         return question;
     }
 
+    finishLevel() {
+        const msg = document.createElement("p");
+        const div = document.getElementById("results");
+
+        msg.textContent = "Your percentage was " + this.scoreData.getCorrectAccuacy();
+
+        
+        div.appendChild(msg);
+
+        console.log("final score is " + this.scoreData.calculateFinalScore());
+
+        for (let button of document.getElementsByClassName("answers")) {
+            button.removeEventListener("click", this.handler);
+            button.disabled = true;
+        }
+    }
+
     nextQuestion() {
         this.questionNumber++;
 
@@ -251,11 +268,7 @@ class levelData {
             this.setQuestion();
         } else {
             // Finish level
-            console.log("final score is " + this.scoreData.calculateFinalScore());
-
-            for (let button of document.getElementsByClassName("answers")) {
-                button.removeEventListener("click", this.handler);
-            }
+            this.finishLevel();
         }
     }
 
