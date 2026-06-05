@@ -203,6 +203,10 @@ class levelData {
         }
     }
 
+    getQuestionsRemaining() {
+        return this.maxQuestions - this.questionNumber;
+    }
+
     setQuestion() {
         this.questiontype = getIntRange(0, 1); // Randomize the question type, MUST BE DONE BEFORE CALLING GET QUESTION
 
@@ -210,7 +214,7 @@ class levelData {
         console.log(this);
 
         // Set question and level number
-        document.getElementById("questionNum").textContent = "Question " + this.questionNumber + ", level " + this.levelNumber;
+        document.getElementById("questionNum").textContent = "Question " + this.questionNumber + ", level " + this.levelNumber + ", questions remaining " + this.getQuestionsRemaining();
 
         this.setButtons();
     }
@@ -242,4 +246,4 @@ class levelData {
 
 const level = new levelData();
 
-level.setLevel(1);
+level.setLevel(2);
