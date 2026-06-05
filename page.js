@@ -124,8 +124,22 @@ class levelData {
         return document.getElementById(buttons[buttonId]);
     }
 
+    #setButtonEventHandlers() {
+        let buttons = document.getElementsByClassName("answers");
+
+        let i = 0; // Start at 1 to have 1 based numbering for questions
+        for (let button of buttons) {
+            i++;
+            this.resetButtonText(button, i + 1);
+
+            button.addEventListener("click", this.handler);
+        }
+    }
+
     setButtons() {
         let randomLetterIndex = 0;
+
+        this.#setButtonEventHandlers();
 
         this.correctButton = getIntRange(0, 3);
 
@@ -205,16 +219,6 @@ class levelData {
         this.levelNumber = levelNumber;
         this.questionNumber = 0;
         this.amharicRandomizedAlphabet = shuffleToCopy(amharicAlphabetList);
-
-        let buttons = document.getElementsByClassName("answers");
-
-        let i = 0; // Start at 1 to have 1 based numbering for questions
-        for (let button of buttons) {
-            i++;
-            this.resetButtonText(button, i + 1);
-
-            button.addEventListener("click", this.handler);
-        }
 
         this.nextQuestion();
     }
