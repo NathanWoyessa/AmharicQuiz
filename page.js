@@ -5,6 +5,13 @@ const questionTypeEnum = {
     FIND_THE_LETTER: 1, 
 };
 
+const buttons = [
+    "ans_a",
+    "ans_b",
+    "ans_c",
+    "ans_d"
+];
+
 function getIntRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -15,23 +22,74 @@ class levelData {
     questionNumber = 0;
     questiontype = questionTypeEnum.FIND_THE_SOUND;
     amharicRandomizedAlphabet = [];
-    correctAnswer = "";
+
+    question = null;
+    correctAnswer = null;
+    correctButton = 0;
     maxQuestions = 10;
 
-    getRandLetter() {
+    resetButtonText(button, buttonNumber) {
+        button.textContent = buttonNumber + ". ";;
+    }
+
+    // Gets the randomized question letter via index with randomized vowel depending on the level
+    getQuestionLetter(randomIndex) {
         let randVowel = 0;
         if (this.levelNumber > 0) {
             randVowel = getIntRange(0, 6);
         }
-        return this.amharicRandomizedAlphabet[this.questionNumber][randVowel];
+        return this.amharicRandomizedAlphabet[randomIndex][randVowel];
+    }
+
+    getTrueRandomLetter() {
+        return this.getQuestionLetter(getIntRange(0, this.amharicRandomizedAlphabet.length - 1));
+    }
+
+    getRandomFalseAnswer() {
+        let randButtonAnswer = "";
+
+        do {
+            if (this.questiontype == questionTypeEnum.FIND_THE_SOUND) {
+                randButtonAnswer = this.getTrueRandomLetter().sound;
+            }
+            else if (this.questiontype == questionTypeEnum.FIND_THE_LETTER) {
+                randButtonAnswer = this.getTrueRandomLetter().name;
+            } 
+            else {
+                console.error("Invalid questionType" + this.questiontype);
+            }
+        } while (randButtonAnswer === this.correctAnswer); // Loop ensures the false answer never becomes the correct one
+
+        return randButtonAnswer;
+    }
+
+    getButton(buttonId) {
+        return document.getElementById(buttons[buttonId]);
+    }
+
+    setButtons() {
+        let randomLetterIndex = 0;
+
+        this.correctButton = getIntRange(0, 3);
+
+        for (let i = 0; i < 4; i++) {
+            let button = this.getButton(i);
+            this.resetButtonText(button, i + 1); // Always reset button text before setting question to not accumulate text
+
+            if (i === this.correctButton) {
+                button.textContent += this.correctAnswer;
+            } 
+            else {
+                button.textContent += this.getRandomFalseAnswer();
+            }
+        }
     }
 
     getQuestion() {
-        let questionType = "";
         let questionText = "";
-        let randLetter = this.getRandLetter();
+        let randLetter = this.getQuestionLetter(this.questionNumber);
         let question = "";
-
+        
         if (this.questiontype === questionTypeEnum.FIND_THE_SOUND) {
             question = randLetter.name;
 
@@ -45,7 +103,7 @@ class levelData {
             this.correctAnswer = randLetter.name;
         }
         else {
-            console.error("Invalid question type" + questiontype);
+            console.error("Invalid question type" + this.questiontype);
         }
 
         document.getElementById("question").textContent = questionText;
@@ -63,17 +121,15 @@ class levelData {
         }
     }
 
-    getRandQuestion() {
-        return 
-    }
-
     setQuestion() {
-        let question = this.getQuestion();
-        this.questiontype = getIntRange(0, 1); // Randomize the question type
+        this.questiontype = getIntRange(0, 1); // Randomize the question type, MUST BE DONE BEFORE CALLING GET QUESTION
+
+        this.question = this.getQuestion();
         console.log(this);
 
         document.getElementById("questionNum").textContent = "Question " + this.questionNumber; // Set question Number
 
+        this.setButtons();
     }
 
     setLevel(levelNumber = 0, maxLevels = 10) {
@@ -84,10 +140,10 @@ class levelData {
 
         let buttons = document.getElementsByClassName("answers");
 
-        let i = 0;
+        let i = 0; // Start at 1 to have 1 based numbering for questions
         for (let button of buttons) {
             i++;
-            button.textContent = i + ". ";
+            this.resetButtonText(button, i + 1);
 
             button.addEventListener("click", () => {
                 this.nextQuestion();
