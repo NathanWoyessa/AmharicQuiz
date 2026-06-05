@@ -28,6 +28,8 @@ class levelData {
     correctButton = 0;
     maxQuestions = 10;
 
+    buttonsData = []; // The array storing the data in each button
+
     resetButtonText(button, buttonNumber) {
         button.textContent = buttonNumber + ". ";;
     }
@@ -48,6 +50,7 @@ class levelData {
     getRandomFalseAnswer() {
         let randButtonAnswer = "";
 
+        // Loop ensures the false answer never becomes the correct one or another false duplicate
         do {
             if (this.questiontype == questionTypeEnum.FIND_THE_SOUND) {
                 randButtonAnswer = this.getTrueRandomLetter().sound;
@@ -58,7 +61,9 @@ class levelData {
             else {
                 console.error("Invalid questionType" + this.questiontype);
             }
-        } while (randButtonAnswer === this.correctAnswer); // Loop ensures the false answer never becomes the correct one
+        } while (randButtonAnswer === this.correctAnswer || this.buttonsData.includes(randButtonAnswer)); 
+
+        console.assert(!this.buttonsData.includes(randButtonAnswer));
 
         return randButtonAnswer;
     }
@@ -75,12 +80,18 @@ class levelData {
         for (let i = 0; i < 4; i++) {
             let button = this.getButton(i);
             this.resetButtonText(button, i + 1); // Always reset button text before setting question to not accumulate text
+            this.buttonsData.length = 4;
 
             if (i === this.correctButton) {
                 button.textContent += this.correctAnswer;
+                this.buttonsData[i] = this.correctAnswer;
             } 
             else {
-                button.textContent += this.getRandomFalseAnswer();
+
+                let falseAnswer = this.getRandomFalseAnswer();
+
+                button.textContent += falseAnswer;
+                this.buttonsData[i] = falseAnswer;
             }
         }
     }
