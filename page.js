@@ -191,7 +191,7 @@ class levelData {
     nextQuestion() {
         this.questionNumber++;
 
-        if (this.questionNumber < this.maxQuestions) {
+        if (this.questionNumber <= this.maxQuestions) {
             this.setQuestion();
         } else {
             // Finish level
@@ -219,6 +219,21 @@ class levelData {
         this.levelNumber = levelNumber;
         this.questionNumber = 0;
         this.amharicRandomizedAlphabet = shuffleToCopy(amharicAlphabetList);
+
+        if (this.levelNumber === 1) {
+            this.maxQuestions = (this.amharicRandomizedAlphabet.length - 1); // All base letters
+
+        } else if (this.levelNumber === 2) {
+            this.maxQuestions = this.maxQuestions = (this.amharicRandomizedAlphabet.length - 1) * 7; // All combinations
+
+        } else if (this.levelNumber === 3) {
+
+        } else if (this.levelNumber > 3) {
+
+        } else {
+            console.error("Invalid levelNumber: " + this.levelNumber);
+        }
+
 
         this.nextQuestion();
     }
