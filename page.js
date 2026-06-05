@@ -18,7 +18,7 @@ function getIntRange(min, max) {
 
 function buttonEventClick(levelData, event) {
     const button = event.target;
-    if (button.textContent.includes(levelData.correctAnswer)) {
+    if (levelData.checkIfCorrectButton(Number(button.dataset.buttonId))) {
         console.log("correct answer!");
         levelData.scoreData.addAnsweredQuestion(true);
     }
@@ -89,11 +89,15 @@ class levelData {
 
     handler = (event) => { buttonEventClick(this, event); };
 
+    checkIfCorrectButton(buttonId) {
+        return this.buttonsData[buttonId] === this.correctAnswer;
+    }
+
     showCorrectButton() {
         for (let i = 0; i < this.buttonsData.length; i++) {
             let button = this.getButton(i);
 
-            if (this.buttonsData[i] === this.correctAnswer) {
+            if (this.checkIfCorrectButton(i)) {
                 button.style.backgroundColor = "green";
             }
         }
@@ -147,6 +151,8 @@ class levelData {
         let i = 0;
         for (let button of buttons) {
             i++;
+            button.dataset.buttonId = i;
+
             this.resetButtonText(button, i + 1);
 
             button.addEventListener("click", this.handler);
