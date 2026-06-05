@@ -26,6 +26,10 @@ function buttonEventClick(levelData, event) {
         console.log("incorrect answer");
         levelData.scoreData.addAnsweredQuestion(false);
         button.style.backgroundColor = "red";
+
+        levelData.wrongAnswers.push(
+            {answer: levelData.getButtonData(Number(button.dataset.buttonId)), questionType: levelData.questiontype}
+        );
     }
 
     levelData.showCorrectButton();
@@ -82,15 +86,22 @@ class levelData {
     correctAnswer = null;
     correctButton = 0;
     maxQuestions = 20;
+    secondsPassed = 0;
 
     scoreData = new scoring();
 
     buttonsData = []; // The array storing the data in each button
 
+    wrongAnswers = [];
+
     handler = (event) => { buttonEventClick(this, event); };
 
+    getButtonData(buttonId) {
+        return this.buttonsData[buttonId];
+    }
+
     checkIfCorrectButton(buttonId) {
-        return this.buttonsData[buttonId] === this.correctAnswer;
+        return this.getButtonData(buttonId) === this.correctAnswer;
     }
 
     showCorrectButton() {
@@ -244,13 +255,24 @@ class levelData {
     }
 
     finishLevel() {
-        const msg = document.createElement("p");
+        const percentage = document.createElement("p");
+        const secondsPassed = document.createElement("p");
+
         const div = document.getElementById("results");
 
-        msg.textContent = "Your percentage was " + this.scoreData.getCorrectAccuacy();
+        percentage.textContent = "Your percentage was " + this.scoreData.getCorrectAccuacy();
+        secondsPassed.textContent += "Finished in " + this.secondsPassed + " seconds";
 
-        
-        div.appendChild(msg);
+        div.appendChild(percentage);
+        div.appendChild(secondsPassed);
+
+
+        if (this.secondsPassed <= 350) {
+            const finishMsg = document.createElement("p");
+            finishMsg.textContent += "You have completed this test in the sufficient amount of time!";
+
+            div.appendChild(finishMsg);
+        }
 
         console.log("final score is " + this.scoreData.calculateFinalScore());
 
@@ -292,6 +314,7 @@ class levelData {
         this.levelNumber = levelNumber;
         this.questionNumber = 0;
         this.amharicRandomizedAlphabet = shuffleToCopy(amharicAlphabetList);
+        this.startTimer();
 
         if (this.levelNumber === 1) {
             this.maxQuestions = (this.amharicRandomizedAlphabet.length - 1); // All base letters
@@ -312,6 +335,12 @@ class levelData {
 
 
         this.nextQuestion();
+    }
+
+    startTimer() {
+        let timer = setInterval(() => {
+            this.secondsPassed++; // Callback that increments a timer every 1000 ms(1 second)
+        }, 1000);
     }
 
 }
