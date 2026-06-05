@@ -26,7 +26,7 @@ class levelData {
     question = null;
     correctAnswer = null;
     correctButton = 0;
-    maxQuestions = 10;
+    maxQuestions = 20;
 
     buttonsData = []; // The array storing the data in each button
 
@@ -157,7 +157,15 @@ class levelData {
             this.resetButtonText(button, i + 1);
 
             button.addEventListener("click", () => {
-                this.nextQuestion();
+
+                if (button.textContent.includes(this.correctAnswer)) {
+                    console.log("correct answer!");
+                }
+                else {
+                    console.log("incorrect answer");
+                }
+
+                this.nextQuestion(); // Make sure this is called after
             });
         }
 
